@@ -1,8 +1,9 @@
-function ProductCard({ product, showActions, onEdit, onDelete }) {
+function ProductCard({ product, showActions, onEdit, onDelete, onClick }) {
   return (
     <article
-      className="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200
-        transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+      onClick={onClick ? () => onClick(product) : undefined}
+      className={`group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200
+        transition duration-300 hover:-translate-y-1 hover:shadow-xl ${onClick ? "cursor-pointer" : ""}`}
     >
       <div className="relative aspect-4/3 overflow-hidden">
         <img

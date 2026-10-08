@@ -1,6 +1,22 @@
+import { useState } from "react";
 import ProductGrid from "../components/ProductGrid";
+import SearchSortBar from "../components/SearchSortBar";
+import ProductModal from "../components/ProductModal";
 
 function GalleryPage({ products, loading }) {
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("newest");
+  const [selected, setSelected] = useState(null);
+
+  const query = search.trim().toLowerCase();
+  const visible = products
+    .filter((p) => p.name.toLowerCase().includes(query))
+    .sort((a, b) => {
+      if (sort === "price-asc") return a.price - b.price;
+      if (sort === "price-desc") return b.price - a.price;
+      return 0;
+    });
+
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <section
@@ -18,7 +34,25 @@ function GalleryPage({ products, loading }) {
       {loading ? (
         <p className="py-20 text-center text-slate-400">Loading products...</p>
       ) : (
-        <ProductGrid products={products} />
+        <>
+          <SearchSortBar
+            search={search}
+            onSearchChange={setSearch}
+            sort={sort}
+            onSortChange={setSort}
+          />
+          {products.length > 0 && visible.length === 0 ? (
+            <div className="rounded-2xl border-2 border-dashed border-slate-300 py-20 text-center text-slate-400">
+              No products match "{search.trim()}".
+            </div>
+          ) : (
+            <ProductGrid products={visible} onSelect={setSelected} />
+          )}
+        </>
+      )}
+
+      {selected && (
+        <ProductModal product={selected} onClose={() => setSelected(null)} />
       )}
     </main>
   );
